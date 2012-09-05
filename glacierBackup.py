@@ -2,13 +2,14 @@ import argparse
 import tarfile
 import tempfile
 import os
+import sys
 from time import gmtime, strftime
 
 # Use Paul Engstler's Glacier Library - http://paulengstler.github.com/glacier/
 import glacier
 
 parser = argparse.ArgumentParser(description="Backup folders to Amazon Glacier")
-parser.add_argument("paths", metavar="path", nargs='+', 
+parser.add_argument("paths", metavar="path", nargs='*', 
                     help="The path of what you want to backup as a compressed archive (can be repeated)")
 parser.add_argument('-t', '--test', action='store_true',
                     help="Don't actually do anything - just print what would happen.")
@@ -16,18 +17,29 @@ parser.add_argument('-k', '--key', required=True,
                     help="Your Amazon Access Key")
 parser.add_argument('-s', '--secret', required=True,
                     help="Your Amazon Secret Access Key")
-parser.add_argument('-v', '--vault', required=True,
+parser.add_argument('-v', '--vault',
                     help="The vault where you want to store your archives.  If the vault does not exist it will be created.")
+parser.add_argument('-l', '--list-vaults', action='store_true',
+                    help="List the vaults available with the supplied key")
 args = parser.parse_args()
+
+if not (args.vault or args.list_vaults):
+    parser.error("Either --vault or --list-vaults must be given")
+
 tempDir = tempfile.gettempdir()
 
 if args.test:
     print "Connect to AWS"
     print "Fetch list of vaults"
-    print "If " + args.vault + " does not exist create it."
 else:
     connection = glacier.Connection(args.key, args.secret)
     vaults = connection.get_all_vaults();
+    
+    if args.list_vaults:
+        for vault in vaults:
+            print vault.name
+        sys.exit()
+        
     if vaults.count(args.vault) != 0:
         vault = connection.get_vault(args.vault)
     else:
