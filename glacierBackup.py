@@ -36,8 +36,8 @@ else:
     vaults = connection.get_all_vaults();
     
     if args.list_vaults:
-        for vault in vaults:
-            print vault.name
+        for vault_i in vaults:
+            print vault_i.name
         sys.exit()
         
     if vaults.count(args.vault) != 0:
@@ -54,14 +54,17 @@ for path in args.paths:
         print "Store " + absDirName + " in " + archiveName
     else:
         archive = tarfile.open(archiveName, mode="w:bz2")
+        print "Archiving " + absDirName
         archive.add(os.path.abspath(os.path.normpath(path)), arcname=dirName)
         archive.close()
+        print "Archived " + absDirName
         
     if args.test:
         print "Upload " + archiveName + " to Glacier vault " + args.vault
         print "Remove " + archiveName + " from local system"
     else:
         archive = glacier.Archive(archiveName)
+        print "Uploading " + archiveName
         vault.upload(archive, "Tarball of " + absDirName + " taken at " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         print archiveName + " uploaded with ID " + archive.id
         os.remove(archiveName)
