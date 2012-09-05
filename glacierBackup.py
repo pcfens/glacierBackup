@@ -50,6 +50,6 @@ for path in args.paths:
         print "Remove " + archiveName + " from local system"
     else:
         archive = glacier.Archive(archiveName)
-        vault.upload(archive, "Tarball of " + absDirName + "taken at " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+        vault.upload(archive, "Tarball of " + absDirName + " taken at " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         print archiveName + " uploaded with ID " + archive.id
         os.remove(archiveName)
