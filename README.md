@@ -9,7 +9,7 @@ Run `python glacierBackup.py --help` for full usage details.
 
 ## Dependencies
 
-This project uses [my patched fork](https://github.com/pcfens/glacier) of paulengstler's glacier library to make calls to AWS
+This project uses [paulengstler's glacier library](http://paulengstler.github.com/glacier/) to make calls to AWS
 
 ## Coming Soon
 
